@@ -160,7 +160,7 @@ export function ProblemDetailsModal({
                 {statusBadge.label}
               </span>
             </div>
-            <p className="text-gray-600">ID: {problem.id.substring(0, 8)}...</p>
+            <!--<p className="text-gray-600">ID: {problem.id.substring(0, 8)}...</p>-->
           </div>
           <button
             onClick={onClose}
@@ -233,7 +233,7 @@ export function ProblemDetailsModal({
               <div className="flex items-start gap-3">
                 <User className="w-5 h-5 text-gray-400 mt-0.5" />
                 <div>
-                  <p className="text-gray-600">Assigné à</p>
+                  <p className="text-gray-600"> Emis Par </p>
                   <p className="text-gray-900">
                     {problem.utilisateur_affecte.nom || problem.utilisateur_affecte.email}
                   </p>
