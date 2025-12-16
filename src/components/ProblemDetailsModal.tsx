@@ -160,7 +160,7 @@ export function ProblemDetailsModal({
                 {statusBadge.label}
               </span>
             </div>
-            <!--<p className="text-gray-600">ID: {problem.id.substring(0, 8)}...</p>-->
+            <p className="text-gray-600">ID: {problem.id.substring(0, 8)}...</p>
           </div>
           <button
             onClick={onClose}
