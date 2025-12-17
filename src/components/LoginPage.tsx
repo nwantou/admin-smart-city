@@ -5,7 +5,7 @@ interface LoginPageProps {
   supabase: any;
 }
 
-export default function LoginPage({ supabase }: LoginPageProps) {
+export  function LoginPage({ supabase }: LoginPageProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
