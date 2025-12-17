@@ -1,30 +1,17 @@
 import { useState } from 'react';
-import { Lock, Mail, AlertCircle, UserPlus } from 'lucide-react';
-import { toast } from 'sonner';
-import { projectId, publicAnonKey } from '../utils/supabase/info';
+import { Lock, Mail, AlertCircle, MapPin, Search } from 'lucide-react';
 
 interface LoginPageProps {
   supabase: any;
 }
 
-export function LoginPage({ supabase }: LoginPageProps) {
+export default function LoginPage({ supabase }: LoginPageProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [showSignup, setShowSignup] = useState(false);
 
-  // États pour l'inscription
-  const [signupData, setSignupData] = useState({
-    email: '',
-    password: '',
-    nom: '',
-    role: 'admin' as 'admin' | 'agent_municipal',
-  });
-  const [signupLoading, setSignupLoading] = useState(false);
-
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleLogin = async () => {
     setLoading(true);
     setError('');
 
@@ -36,223 +23,368 @@ export function LoginPage({ supabase }: LoginPageProps) {
 
       if (error) throw error;
 
-      toast.success('Connexion réussie !');
+      // Success handled by parent component
     } catch (error: any) {
       console.error('Erreur de connexion:', error);
       setError(error.message || 'Identifiants incorrects');
-      toast.error('Identifiants incorrects. Créez d\'abord un compte administrateur.');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleSignup = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSignupLoading(true);
-    setError('');
-
-    try {
-      const response = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/make-server-cf7452f1/signup`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${publicAnonKey}`,
-          },
-          body: JSON.stringify(signupData),
-        }
-      );
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.error || 'Erreur lors de l\'inscription');
-      }
-
-      toast.success('Compte créé avec succès ! Vous pouvez maintenant vous connecter.');
-      setShowSignup(false);
-      setEmail(signupData.email);
-      setPassword('');
-      setSignupData({ email: '', password: '', nom: '', role: 'admin' });
-    } catch (error: any) {
-      console.error('Erreur inscription:', error);
-      setError(error.message);
-      toast.error(error.message);
-    } finally {
-      setSignupLoading(false);
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleLogin();
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-      <div className="max-w-md w-full">
-        <div className="bg-white rounded-2xl shadow-xl p-8">
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-full mb-4">
-              {showSignup ? <UserPlus className="w-8 h-8 text-white" /> : <Lock className="w-8 h-8 text-white" />}
+    <div style={{ 
+      minHeight: '100vh', 
+      display: 'flex', 
+      flexDirection: 'row',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+    }}>
+      {/* Left Panel - Branding & Info */}
+      <div style={{
+        width: '50%',
+        background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+        padding: '4rem',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        position: 'relative',
+        overflow: 'hidden'
+      }}>
+        {/* Background decoration */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          right: 0,
+          width: '24rem',
+          height: '24rem',
+          background: '#60a5fa',
+          borderRadius: '50%',
+          opacity: 0.2,
+          marginRight: '-12rem',
+          marginTop: '-12rem'
+        }}></div>
+        <div style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          width: '16rem',
+          height: '16rem',
+          background: '#1d4ed8',
+          borderRadius: '50%',
+          opacity: 0.2,
+          marginLeft: '-8rem',
+          marginBottom: '-8rem'
+        }}></div>
+        
+        <div style={{ 
+          position: 'relative', 
+          zIndex: 10, 
+          maxWidth: '32rem', 
+          margin: '0 auto' 
+        }}>
+          {/* Logo */}
+          <div style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: '0.75rem', 
+            marginBottom: '3rem' 
+          }}>
+            <div style={{
+              width: '3.5rem',
+              height: '3.5rem',
+              background: 'white',
+              borderRadius: '0.75rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)'
+            }}>
+              <MapPin style={{ width: '2rem', height: '2rem', color: '#2563eb' }} />
             </div>
-            <h1 className="text-gray-900 mb-2">
-              {showSignup ? 'Créer un compte' : 'Portail Administrateur'}
-            </h1>
-            <p className="text-gray-600">Gestion des signalements urbains</p>
+            <span style={{ 
+              fontSize: '1.875rem', 
+              fontWeight: 'bold', 
+              color: 'white' 
+            }}>UrbanFix</span>
+          </div>
+          
+          {/* Titre */}
+          <h1 style={{ 
+            fontSize: '3rem', 
+            fontWeight: 'bold', 
+            color: 'white', 
+            marginBottom: '1.5rem', 
+            lineHeight: '1.2' 
+          }}>
+            Gérez vos signalements urbains efficacement
+          </h1>
+          
+          {/* Paragraphe explicatif */}
+          <div style={{ marginBottom: '3rem' }}>
+            <p style={{ 
+              color: 'white', 
+              fontSize: '1.125rem', 
+              lineHeight: '1.75', 
+              marginBottom: '1rem' 
+            }}>
+              Bienvenue sur votre plateforme de gestion des signalements urbains. 
+              Votre Outil de gestion des signalements urbains.
+            </p>
           </div>
 
-          {!showSignup ? (
-            // Formulaire de connexion
-            <form onSubmit={handleLogin} className="space-y-6">
-              {error && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3">
-                  <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-                  <p className="text-red-800">{error}</p>
-                </div>
-              )}
-
-              <div>
-                <label htmlFor="email" className="block text-gray-700 mb-2">
-                  Email
-                </label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <input
-                    id="email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="admin@ville.fr"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label htmlFor="password" className="block text-gray-700 mb-2">
-                  Mot de passe
-                </label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <input
-                    id="password"
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="••••••••"
-                  />
-                </div>
-              </div>
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {loading ? 'Connexion...' : 'Se connecter'}
-              </button>
-            </form>
-          ) : (
-            // Formulaire d'inscription
-            <form onSubmit={handleSignup} className="space-y-6">
-              {error && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3">
-                  <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-                  <p className="text-red-800">{error}</p>
-                </div>
-              )}
-
-              <div>
-                <label htmlFor="signup-nom" className="block text-gray-700 mb-2">
-                  Nom complet
-                </label>
-                <input
-                  id="signup-nom"
-                  type="text"
-                  value={signupData.nom}
-                  onChange={(e) => setSignupData({ ...signupData, nom: e.target.value })}
-                  required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Jean Dupont"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="signup-email" className="block text-gray-700 mb-2">
-                  Email
-                </label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <input
-                    id="signup-email"
-                    type="email"
-                    value={signupData.email}
-                    onChange={(e) => setSignupData({ ...signupData, email: e.target.value })}
-                    required
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="admin@ville.fr"
-                  />
+          {/* Illustration */}
+          <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+            <div style={{ position: 'relative' }}>
+              {/* Folder illustration */}
+              <div style={{
+                width: '14rem',
+                height: '10rem',
+                background: 'rgba(255, 255, 255, 0.2)',
+                backdropFilter: 'blur(10px)',
+                borderRadius: '1rem',
+                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+                transform: 'rotate(-3deg)',
+                position: 'relative',
+                overflow: 'hidden',
+                border: '1px solid rgba(255, 255, 255, 0.3)'
+              }}>
+                <div style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '2.5rem',
+                  background: 'rgba(255, 255, 255, 0.3)'
+                }}></div>
+                <div style={{
+                  position: 'absolute',
+                  top: '3rem',
+                  left: '1.5rem',
+                  right: '1.5rem',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '0.5rem'
+                }}>
+                  <div style={{
+                    background: 'white',
+                    borderRadius: '0.5rem',
+                    padding: '0.5rem',
+                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <div style={{ width: '1.5rem', height: '1.5rem', background: '#60a5fa', borderRadius: '0.25rem' }}></div>
+                      <div style={{ flex: 1, height: '0.5rem', background: '#e5e7eb', borderRadius: '0.25rem' }}></div>
+                    </div>
+                  </div>
+                  <div style={{
+                    background: 'white',
+                    borderRadius: '0.5rem',
+                    padding: '0.5rem',
+                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <div style={{ width: '1.5rem', height: '1.5rem', background: '#4ade80', borderRadius: '0.25rem' }}></div>
+                      <div style={{ flex: 1, height: '0.5rem', background: '#e5e7eb', borderRadius: '0.25rem' }}></div>
+                    </div>
+                  </div>
                 </div>
               </div>
-
-              <div>
-                <label htmlFor="signup-password" className="block text-gray-700 mb-2">
-                  Mot de passe
-                </label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <input
-                    id="signup-password"
-                    type="password"
-                    value={signupData.password}
-                    onChange={(e) => setSignupData({ ...signupData, password: e.target.value })}
-                    required
-                    minLength={6}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="••••••••"
-                  />
-                </div>
-                <p className="text-gray-600 mt-1">Minimum 6 caractères</p>
+              
+              {/* Magnifying glass */}
+              <div style={{
+                position: 'absolute',
+                bottom: '-0.75rem',
+                right: '-0.75rem',
+                width: '5rem',
+                height: '5rem',
+                background: 'linear-gradient(135deg, #fbbf24 0%, #fb923c 100%)',
+                borderRadius: '50%',
+                boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transform: 'rotate(12deg)'
+              }}>
+                <Search style={{ width: '2.5rem', height: '2.5rem', color: 'white' }} />
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-              <div>
-                <label htmlFor="signup-role" className="block text-gray-700 mb-2">
-                  Rôle
-                </label>
-                <select
-                  id="signup-role"
-                  value={signupData.role}
-                  onChange={(e) => setSignupData({ ...signupData, role: e.target.value as 'admin' | 'agent_municipal' })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="admin">Administrateur</option>
-                  <option value="agent_municipal">Agent Municipal</option>
-                </select>
+      {/* Right Panel - Login Form */}
+      <div style={{
+        width: '50%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '4rem',
+        background: '#f9fafb'
+      }}>
+        <div style={{
+          width: '100%',
+          maxWidth: '28rem',
+          background: 'white',
+          borderRadius: '1.5rem',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+          padding: '2.5rem'
+        }}>
+          <div style={{ marginBottom: '2rem' }}>
+            <h2 style={{ 
+              fontSize: '1.875rem', 
+              fontWeight: 'bold', 
+              color: '#111827', 
+              marginBottom: '0.5rem' 
+            }}>Connexion</h2>
+            <p style={{ color: '#6b7280' }}>Connectez-vous pour accéder à votre tableau de bord</p>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+            {error && (
+              <div style={{
+                background: '#fef2f2',
+                border: '1px solid #fecaca',
+                borderRadius: '0.75rem',
+                padding: '1rem',
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: '0.75rem'
+              }}>
+                <AlertCircle style={{ width: '1.25rem', height: '1.25rem', color: '#dc2626', flexShrink: 0, marginTop: '0.125rem' }} />
+                <p style={{ fontSize: '0.875rem', color: '#991b1b' }}>{error}</p>
               </div>
+            )}
 
-              <button
-                type="submit"
-                disabled={signupLoading}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {signupLoading ? 'Création...' : 'Créer le compte'}
-              </button>
-            </form>
-          )}
+            <div>
+              <label htmlFor="email" style={{ 
+                display: 'block', 
+                fontSize: '0.875rem', 
+                fontWeight: 600, 
+                color: '#374151', 
+                marginBottom: '0.5rem' 
+              }}>
+                Email
+              </label>
+              <input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                onKeyPress={handleKeyPress}
+                required
+                style={{
+                  width: '100%',
+                  padding: '0.75rem 1rem',
+                  background: '#f9fafb',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '0.75rem',
+                  outline: 'none',
+                  fontSize: '1rem',
+                  transition: 'all 0.2s'
+                }}
+                placeholder="admin@ville.fr"
+                onFocus={(e) => {
+                  e.target.style.borderColor = '#3b82f6';
+                  e.target.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1)';
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = '#e5e7eb';
+                  e.target.style.boxShadow = 'none';
+                }}
+              />
+            </div>
 
-          <div className="mt-6 pt-6 border-t border-gray-200">
-            /*
+            <div>
+              <label htmlFor="password" style={{ 
+                display: 'block', 
+                fontSize: '0.875rem', 
+                fontWeight: 600, 
+                color: '#374151', 
+                marginBottom: '0.5rem' 
+              }}>
+                Mot de passe
+              </label>
+              <input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                onKeyPress={handleKeyPress}
+                required
+                style={{
+                  width: '100%',
+                  padding: '0.75rem 1rem',
+                  background: '#f9fafb',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '0.75rem',
+                  outline: 'none',
+                  fontSize: '1rem',
+                  transition: 'all 0.2s'
+                }}
+                placeholder="••••••••"
+                onFocus={(e) => {
+                  e.target.style.borderColor = '#3b82f6';
+                  e.target.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1)';
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = '#e5e7eb';
+                  e.target.style.boxShadow = 'none';
+                }}
+              />
+            </div>
+
             <button
-              onClick={() => {
-                setShowSignup(!showSignup);
-                setError('');
+              onClick={handleLogin}
+              disabled={loading}
+              style={{
+                width: '100%',
+                background: loading ? '#93c5fd' : 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+                color: 'white',
+                fontWeight: 600,
+                padding: '0.875rem',
+                borderRadius: '0.75rem',
+                border: 'none',
+                cursor: loading ? 'not-allowed' : 'pointer',
+                transition: 'all 0.2s',
+                boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+                fontSize: '1rem'
               }}
-              className="w-full text-blue-600 hover:text-blue-700 transition-colors"
+              onMouseEnter={(e) => {
+                if (!loading) {
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.boxShadow = '0 20px 25px -5px rgba(0, 0, 0, 0.1)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.1)';
+              }}
             >
-              {showSignup ? '← Retour à la connexion' : 'Créer un compte administrateur'}
+              {loading ? 'Connexion en cours...' : 'Se connecter'}
             </button>
-            */
-            <p className="text-gray-600 text-center mt-3">
+          </div>
+
+          <div style={{ 
+            marginTop: '2rem', 
+            paddingTop: '1.5rem', 
+            borderTop: '1px solid #e5e7eb' 
+          }}>
+            <p style={{ 
+              textAlign: 'center', 
+              fontSize: '0.875rem', 
+              color: '#6b7280', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center', 
+              gap: '0.5rem' 
+            }}>
+              <Lock style={{ width: '1rem', height: '1rem' }} />
               Accès réservé aux administrateurs municipaux
             </p>
           </div>
