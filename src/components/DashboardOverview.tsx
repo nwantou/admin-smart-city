@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Send, Clock, CheckCircle, MapPin, Users, TrendingUp } from 'lucide-react';
 import { ProblemsMap } from './ProblemsMap';
 import { ProblemsList } from './ProblemsList';
@@ -18,6 +18,7 @@ export function DashboardOverview({ supabase, user }: DashboardOverviewProps) {
   const [selectedProblem, setSelectedProblem] = useState<any>(null);
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [filterCategory, setFilterCategory] = useState<string>('all');
+  const [mapRef, setMapRef] = useState<any>(null);
 
   useEffect(() => {
     loadData();
@@ -167,11 +168,21 @@ export function DashboardOverview({ supabase, user }: DashboardOverviewProps) {
       {/* Carte et Liste */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Carte */}
+         
+        {/* Carte */}
         <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
           <div className="p-4 border-b border-gray-200">
             <h2 className="text-gray-900">Carte des signalements</h2>
+            <p className="text-gray-600 text-sm mt-1">
+              {filteredProblems.length} signalement(s) géolocalisé(s)
+            </p>
           </div>
-          <ProblemsMap problems={filteredProblems} onProblemClick={setSelectedProblem} />
+          <ProblemsMap 
+            mapRef={mapRef} 
+            setMapRef={setMapRef} 
+            problems={filteredProblems} 
+            onProblemClick={setSelectedProblem} 
+          />
         </div>
 
         {/* Liste */}
