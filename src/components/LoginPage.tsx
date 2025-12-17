@@ -241,6 +241,7 @@ export function LoginPage({ supabase }: LoginPageProps) {
           )}
 
           <div className="mt-6 pt-6 border-t border-gray-200">
+            /*
             <button
               onClick={() => {
                 setShowSignup(!showSignup);
@@ -250,6 +251,7 @@ export function LoginPage({ supabase }: LoginPageProps) {
             >
               {showSignup ? '← Retour à la connexion' : 'Créer un compte administrateur'}
             </button>
+            */
             <p className="text-gray-600 text-center mt-3">
               Accès réservé aux administrateurs municipaux
             </p>
