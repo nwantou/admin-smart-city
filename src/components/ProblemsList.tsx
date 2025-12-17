@@ -3,6 +3,7 @@ import { Clock, MapPin, User } from 'lucide-react';
 interface ProblemsListProps {
   problems: any[];
   onProblemClick: (problem: any) => void;
+  selectedProblemId?: string;
 }
 
 export function ProblemsList({ problems, onProblemClick }: ProblemsListProps) {

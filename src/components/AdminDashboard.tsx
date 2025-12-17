@@ -39,7 +39,7 @@ export function AdminDashboard({ supabase, user, onSignOut }: AdminDashboardProp
                   <LayoutDashboard className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-gray-900">Gestion Urbaine</h1>
+                  <h1 className="text-gray-900">UrbanFix</h1>
                   <p className="text-gray-600">Administration</p>
                 </div>
               </div>
@@ -51,7 +51,7 @@ export function AdminDashboard({ supabase, user, onSignOut }: AdminDashboardProp
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
               className={`p-2 hover:bg-gray-100 rounded-lg transition-colors ${
-                !sidebarOpen ? 'absolute -right-3 top-4 bg-white border border-gray-200 shadow-md' : ''
+                !sidebarOpen ? 'bg-white' : 'bg-white border border-gray-200 '
               }`}
             >
               <ChevronLeft className={`w-5 h-5 transition-transform ${!sidebarOpen ? 'rotate-180' : ''}`} />
@@ -234,7 +234,7 @@ export function AdminDashboard({ supabase, user, onSignOut }: AdminDashboardProp
               <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
                 <LayoutDashboard className="w-5 h-5 text-white" />
               </div>
-              <h1 className="text-gray-900">Gestion Urbaine</h1>
+              <h1 className="text-gray-900">UrbanFix</h1>
             </div>
             
             {/* Notifications mobile */}

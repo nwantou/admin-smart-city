@@ -75,7 +75,7 @@ export function ReportsAnalytics({ supabase, user }: ReportsAnalyticsProps) {
     });
 
     const statusData = Object.entries(statusStats).map(([name, value]) => ({
-      name: name.replace('_', ' ').toUpperCase(),
+      name: name.charAt(0).toUpperCase() + name.slice(1),
       value,
     }));
 
@@ -109,14 +109,14 @@ export function ReportsAnalytics({ supabase, user }: ReportsAnalyticsProps) {
 
     // Temps moyen de résolution
     const resolvedProblems = problemsData.filter((p) => 
-      p.statut?.code === 'résolu' 
+      p.statut?.code === 'résolu'
     );
     let avgResolutionTime = 0;
 
     if (resolvedProblems.length > 0) {
       const totalTime = resolvedProblems.reduce((sum, p) => {
         const created = new Date(p.create_at).getTime();
-        const updated = new Date(p.updated_at).getTime();
+        const updated = new Date(p.updated_at || p.create_at).getTime();
         return sum + (updated - created);
       }, 0);
 
@@ -142,7 +142,7 @@ export function ReportsAnalytics({ supabase, user }: ReportsAnalyticsProps) {
       name,
       total: stats.total,
       resolved: stats.resolved,
-      rate: Math.round((stats.resolved / stats.total) * 100),
+      rate: stats.total > 0 ? Math.round((stats.resolved / stats.total) * 100) : 0,
     }));
 
     setStats({
@@ -158,12 +158,63 @@ export function ReportsAnalytics({ supabase, user }: ReportsAnalyticsProps) {
     });
   };
 
+  // Composants Shimmer pour ReportsAnalytics
+  const KpiCardShimmer = () => (
+    <div className="bg-white rounded-xl p-6 border border-gray-200 animate-pulse">
+      <div className="flex items-center justify-between mb-4">
+        <div className="w-12 h-12 bg-gray-200 rounded-lg"></div>
+      </div>
+      <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+      <div className="h-6 bg-gray-200 rounded w-1/4"></div>
+    </div>
+  );
+
+  const ChartShimmer = () => (
+    <div className="bg-white rounded-xl border border-gray-200 p-6 animate-pulse">
+      <div className="h-6 bg-gray-200 rounded w-1/4 mb-6"></div>
+      <div className="h-64 bg-gray-200 rounded"></div>
+    </div>
+  );
+
+  const DepartmentShimmer = () => (
+    <div className="p-4 bg-gray-100 rounded-lg animate-pulse">
+      <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+      <div className="flex justify-between items-center mb-2">
+        <div className="h-3 bg-gray-200 rounded w-1/3"></div>
+        <div className="h-3 bg-gray-200 rounded w-8"></div>
+      </div>
+      <div className="h-2 bg-gray-200 rounded w-full"></div>
+    </div>
+  );
+
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-12">
-        <div className="text-center">
-          <div className="inline-block w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-          <p className="mt-4 text-gray-600">Chargement des statistiques...</p>
+      <div className="space-y-6 animate-pulse">
+        {/* KPIs Shimmer */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <KpiCardShimmer />
+          <KpiCardShimmer />
+          <KpiCardShimmer />
+          <KpiCardShimmer />
+        </div>
+
+        {/* Graphiques Shimmer */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <ChartShimmer />
+          <ChartShimmer />
+          <ChartShimmer />
+          <ChartShimmer />
+        </div>
+
+        {/* Performance par département Shimmer */}
+        <div className="bg-white rounded-xl border border-gray-200 p-6">
+          <div className="h-6 bg-gray-200 rounded w-1/4 mb-6"></div>
+          <div className="h-64 bg-gray-200 rounded mb-6"></div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <DepartmentShimmer />
+            <DepartmentShimmer />
+            <DepartmentShimmer />
+          </div>
         </div>
       </div>
     );

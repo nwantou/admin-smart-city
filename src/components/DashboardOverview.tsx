@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Send, Clock, CheckCircle, MapPin, Users, TrendingUp } from 'lucide-react';
 import { ProblemsMap } from './ProblemsMap';
 import { ProblemsList } from './ProblemsList';
@@ -186,8 +186,8 @@ export function DashboardOverview({ supabase, user }: DashboardOverviewProps) {
         </div>
 
         {/* Liste */}
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-          <div className="p-4 border-b border-gray-200">
+        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden flex flex-col">
+          <div className="p-4 border-b border-gray-200 flex-shrink-0">
             <h2 className="text-gray-900 mb-4">Signalements récents</h2>
             
             {/* Filtres */}
