@@ -283,7 +283,7 @@ export function ProblemDetailsModal({
                   ))}
                 </select>
               </div>
-
+                {/*
               <div>
                 <label className="block text-gray-700 mb-2">Assigner à</label>
                 <select
@@ -300,7 +300,7 @@ export function ProblemDetailsModal({
                   ))}
                 </select>
               </div>
-
+                */ }
               <div className="flex gap-2">
                 <button
                   onClick={handleSave}
