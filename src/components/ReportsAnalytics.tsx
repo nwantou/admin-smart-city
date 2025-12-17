@@ -325,7 +325,7 @@ export function ReportsAnalytics({ supabase, user }: ReportsAnalyticsProps) {
 
         {/* Tendance temporelle */}
         <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <h2 className="text-gray-900 mb-6">Évolution (30 derniers jours)</h2>
+          <h2 className="text-gray-900 mb-6">Évolution du nombre de signalments (30 derniers jours)</h2>
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={stats.trendData}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -341,7 +341,7 @@ export function ReportsAnalytics({ supabase, user }: ReportsAnalyticsProps) {
       {/* Performance par département */}
       {stats.departmentData.length > 0 && (
         <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <h2 className="text-gray-900 mb-6">Performance par Département</h2>
+          <h2 className="text-gray-900 mb-6">Performance des Agents par Département</h2>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={stats.departmentData}>
               <CartesianGrid strokeDasharray="3 3" />
